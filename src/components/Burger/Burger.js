@@ -2,6 +2,7 @@ import React from "react";
 
 import classes from "./Burger.module.css";
 import Ingridient from "./Ingridient/Ingridient";
+import {withRouter} from "react-router-dom";
 
 const Burger = (props) => {
   let items = Object.keys(props.ingredients).map(igKey => {
@@ -24,4 +25,4 @@ const Burger = (props) => {
   );
 };
 
-export default Burger;
+export default withRouter(Burger);
