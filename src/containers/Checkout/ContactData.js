@@ -4,8 +4,11 @@ import Spinner from "../../components/Visual/Spinner";
 
 import classes from "./ContactData.module.css";
 import axios from "../../axios-orders";
-import {withRouter} from "react-router-dom";
+import WithErrorHandler from "../../containers/Layout/WithErrorHandler";
+import * as actions from '../../store/actions';
+
 import Input from "./Input";
+import {connect} from "react-redux";
 
 
 class ContactData extends Component {
@@ -58,41 +61,28 @@ class ContactData extends Component {
             { value: 'cheapest', display: 'Cheapest' },
           ]
         },
-        value: '',
+        value: 'fastest',
         valid: true
       },
     },
-
     formIsValid: false,
-    loading: false
   };
 
   coHandler = (event) => {
     event.preventDefault();
-    this.setState({ loading: true });
-
     const formData = {};
 
     for (let formId in this.state.orderForm) {
       formData[formId] = this.state.orderForm[formId].value;
     }
 
-    console.log(this.props.totalPrice);
-    
     const order = {
-      ingredients: this.props.ingredients,
-      price: this.props.totalPrice,
+      ingredients: this.props.ings,
+      price: this.props.price,
       orderData: formData
     };
 
-    axios.post('/orders.json', order)
-      .then(response => {
-        this.setState({ loading: false });
-        this.props.history.push('/');
-      })
-      .catch(err => {
-        this.setState({ loading: false });
-      })
+    this.props.onOrderBurger(order);
   };
 
   checkValidity = (value, rules) => {
@@ -134,7 +124,7 @@ class ContactData extends Component {
 
     let form = (<Spinner/>);
 
-    if (!this.state.loading)
+    if (!this.props.loading)
       form =
         (<div className={classes.ContactData}>
           <h4>Enter your contacts</h4>
@@ -157,4 +147,18 @@ class ContactData extends Component {
   }
 }
 
-export default withRouter(ContactData);
+const mapState2Props = state => {
+  return {
+    ings: state.burger.ingredients,
+    price: state.burger.totalPrice,
+    loading: state.order.loading
+  }
+};
+
+const mapDispatch2Props = dispatch => {
+  return {
+    onOrderBurger: (order) => dispatch(actions.purchaseBurger(order))
+  }
+};
+
+export default connect(mapState2Props, mapDispatch2Props)(WithErrorHandler(ContactData, axios));
