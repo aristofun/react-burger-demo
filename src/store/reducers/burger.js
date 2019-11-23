@@ -12,7 +12,8 @@ const ING_PRICES = {
 const initState = {
   ingredients: null,
   totalPrice: 4,
-  error: false
+  error: false,
+  building: false
 };
 
 const reducerOrder = (state = initState, action) => {
@@ -26,7 +27,8 @@ const reducerOrder = (state = initState, action) => {
 
       return updateObj(state, {
         ingredients: updIngrs,
-        totalPrice: state.totalPrice + ING_PRICES[action.ingName]
+        totalPrice: state.totalPrice + ING_PRICES[action.ingName],
+        building: true
       });
 
     case actionTypes.DEL_INGR:
@@ -37,14 +39,16 @@ const reducerOrder = (state = initState, action) => {
           ...state.ingredients,
           [action.ingName]: newVal < 0 ? 0 : newVal
         },
-        totalPrice: state.totalPrice - ING_PRICES[action.ingName]
+        totalPrice: state.totalPrice - ING_PRICES[action.ingName],
+        building: true
       };
 
     case actionTypes.SET_INGRS:
       return {
         ...state,
         ...initState,
-        ingredients: action.ingrs
+        ingredients: action.ingrs,
+        building: false
       };
 
     case  actionTypes.FETCH_INGRS_ERROR:

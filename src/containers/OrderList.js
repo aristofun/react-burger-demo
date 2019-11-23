@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
-import Order from "../../components/OrderSummary/Order";
-import axios from "../../axios-orders";
-import WithErrorHandler from "../Layout/WithErrorHandler";
-import * as actions from "../../store/actions";
+import Order from "../components/OrderSummary/Order";
+import axios from "../axios-orders";
+import WithErrorHandler from "./Layout/WithErrorHandler";
+import * as actions from "../store/actions";
 import {connect} from "react-redux";
-import Spinner from "../../components/Visual/Spinner";
+import Spinner from "../components/Visual/Spinner";
 
 
 class OrderList extends Component {
   componentDidMount() {
-    this.props.onFetchOrders();
+    this.props.onFetchOrders(this.props.token, this.props.userId);
   }
 
   render() {
@@ -31,13 +31,15 @@ class OrderList extends Component {
 const mapState2Props = state => {
   return {
     orders: state.order.orders,
-    loading: state.order.loading
+    loading: state.order.loading,
+    token: state.auth.token,
+    userId: state.auth.userId
   }
 };
 
 const mapDispatch2Props = dispatch => {
   return {
-    onFetchOrders: () => dispatch(actions.fetchOrders())
+    onFetchOrders: (token, uid) => dispatch(actions.fetchOrders(token, uid))
   }
 };
 

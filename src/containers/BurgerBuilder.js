@@ -1,16 +1,16 @@
 import React, {Component, Fragment} from "react";
-import Burger from "../../components/Burger/Burger";
-import BuildController from "../../components/Burger/BuildController/BuildController";
-import Modal from "../../components/Visual/Modal";
-import OrderSummary from "../../components/OrderSummary/OrderSummary";
-import Spinner from "../../components/Visual/Spinner";
-import axios from "../../axios-orders";
+import Burger from "../components/Burger/Burger";
+import BuildController from "../components/Burger/BuildController/BuildController";
+import Modal from "../components/Visual/Modal";
+import OrderSummary from "../components/OrderSummary/OrderSummary";
+import Spinner from "../components/Visual/Spinner";
+import axios from "../axios-orders";
 import {connect} from "react-redux";
-import * as actions from '../../store/actions';
-import WithErrorHandler from "../Layout/WithErrorHandler";
+import * as actions from '../store/actions';
+import WithErrorHandler from "./Layout/WithErrorHandler";
 
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
   state = {
     purchasing: false,
   };
@@ -20,7 +20,11 @@ class BurgerBuilder extends Component {
   }
 
   purchaseHandler = () => {
-    this.setState({ purchasing: true });
+    if (this.props.isAuthenticated) this.setState({ purchasing: true });
+    else {
+      this.props.onAuthRedirect('/checkout');
+      this.props.history.push('/auth');
+    }
   };
 
   purchaseCancelHandler = () => {
@@ -67,6 +71,7 @@ class BurgerBuilder extends Component {
             price={this.props.price}
             purchaseable={this.updatePurchase(this.props.ings)}
             ordered={this.purchaseHandler}
+            isAuthenticated={this.props.isAuthenticated}
           />
         </Fragment>
     }
@@ -89,7 +94,8 @@ const mapState2Props = state => {
   return {
     ings: state.burger.ingredients,
     price: state.burger.totalPrice,
-    error: state.burger.error
+    error: state.burger.error,
+    isAuthenticated: !!state.auth.token
   }
 };
 
@@ -98,7 +104,8 @@ const mapDispatch2Props = dispatch => {
     onIngAdded: (ing) => dispatch(actions.addIngr(ing)),
     onIngDeleted: (ing) => dispatch(actions.delIngr(ing)),
     initIngredients: () => dispatch(actions.initIngredients()),
-    onInitPurchase: () => dispatch(actions.purchaseInit())
+    onInitPurchase: () => dispatch(actions.purchaseInit()),
+    onAuthRedirect: (path) => dispatch(actions.setAuthRedirect(path)),
   }
 };
 
