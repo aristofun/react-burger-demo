@@ -93,7 +93,7 @@ class Auth extends Component {
   };
 
   componentDidMount() {
-    if (!this.props.building && this.props.authRedirect !== '/'){
+    if (!this.props.building && this.props.authRedirect !== '/') {
       this.props.onSetAuthRedirect('/');
     }
   }
@@ -111,8 +111,9 @@ class Auth extends Component {
     let form = <Spinner/>;
 
     if (!this.props.loading)
-      form = formels.map(el => (
+      form = formels.sort((a, b) => a.config.elementConfig.type > b.config.elementConfig.type ? 1 : -1).map(el => (
         <Input key={el.id}
+               id={el.id}
                elementType={el.config.elementType}
                elementConfig={el.config.elementConfig}
                value={el.config.value}
