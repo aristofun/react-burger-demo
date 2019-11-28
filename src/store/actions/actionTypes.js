@@ -18,4 +18,5 @@ export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const AUTH_FAIL = 'AUTH_FAIL';
 export const SET_AUTH_REDIRECT = 'SET_AUTH_REDIRECT';
 
+export const INIT_LOGOUT = 'INIT_LOGOUT';
 export const LOGOUT = 'LOGOUT';
