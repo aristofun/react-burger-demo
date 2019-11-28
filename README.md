@@ -11,7 +11,7 @@ My playing with some popular React and Redux concepts:
 - CSS styling 
 - etc. 
 
-Live demo:
+Live demo: https://playground-1538044699957.firebaseapp.com/auth 
 
 
 *WARNING:* it's not a production code, some places are left dirty intentionally for the learning
