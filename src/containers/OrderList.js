@@ -8,15 +8,15 @@ import Spinner from "../components/Visual/Spinner";
 
 const OrderList = (props) => {
   useEffect(() => {
-    props.onFetchOrders(this.props.token, this.props.userId);
+    props.onFetchOrders(props.token, props.userId);
   }, []);
 
   let orders = <Spinner/>;
 
-  if (!this.props.loading)
+  if (!props.loading)
     orders = (
       <div>
-        {this.props.orders.map(order => (
+        {props.orders.map(order => (
           <Order
             key={order.id}
             ingredients={order.ingredients}

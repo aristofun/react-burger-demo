@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import Button from "../../components/Visual/Button";
 import Spinner from "../../components/Visual/Spinner";
 
@@ -11,96 +11,94 @@ import Input from "./Input";
 import {connect} from "react-redux";
 
 
-class ContactData extends Component {
-  state = {
-    orderForm: {
-      name: {
-        elementType: 'input',
-        elementConfig: { type: 'text', placeholder: 'Your name' },
-        value: '',
-        validation: {
-          required: true
-        },
-        valid: false,
-        touched: false
+const ContactData = (props) => {
+  const [ form, setForm ] = useState({
+    name: {
+      elementType: 'input',
+      elementConfig: { type: 'text', placeholder: 'Your name' },
+      value: '',
+      validation: {
+        required: true
       },
-
-      country: {
-        elementType: 'input',
-        elementConfig: { type: 'text', placeholder: 'Country' },
-        value: '',
-        validation: {
-          required: true
-        },
-        valid: false,
-        touched: false
-      },
-
-      street: {
-        elementType: 'input',
-        elementConfig: { type: 'text', placeholder: 'Your street adress' },
-        value: ''
-      },
-
-      email: {
-        elementType: 'input',
-        elementConfig: { type: 'email', placeholder: 'Email' },
-        value: '',
-        validation: {
-          required: true
-        },
-        valid: false,
-        touched: false
-      },
-
-      delivery: {
-        elementType: 'select',
-        elementConfig: {
-          options: [
-            { value: 'fastest', display: 'Fastest' },
-            { value: 'cheapest', display: 'Cheapest' },
-          ]
-        },
-        value: 'fastest',
-        valid: true
-      },
+      valid: false,
+      touched: false
     },
-    formIsValid: false,
-  };
+    country: {
+      elementType: 'input',
+      elementConfig: { type: 'text', placeholder: 'Country' },
+      value: '',
+      validation: {
+        required: true
+      },
+      valid: false,
+      touched: false
+    },
 
-  coHandler = (event) => {
+    street: {
+      elementType: 'input',
+      elementConfig: { type: 'text', placeholder: 'Your street adress' },
+      value: ''
+    },
+
+    email: {
+      elementType: 'input',
+      elementConfig: { type: 'email', placeholder: 'Email' },
+      value: '',
+      validation: {
+        required: true
+      },
+      valid: false,
+      touched: false
+    },
+
+    delivery: {
+      elementType: 'select',
+      elementConfig: {
+        options: [
+          { value: 'fastest', display: 'Fastest' },
+          { value: 'cheapest', display: 'Cheapest' },
+        ]
+      },
+      value: 'fastest',
+      valid: true
+    },
+  });
+
+  const [ isValid, setValid ] = useState(false);
+
+  const coHandler = (event) => {
     event.preventDefault();
     const formData = {};
 
-    for (let formId in this.state.orderForm) {
-      formData[formId] = this.state.orderForm[formId].value;
+    for (let formId in form) {
+      formData[formId] = form[formId].value;
     }
 
     const order = {
-      ingredients: this.props.ings,
-      price: this.props.price,
+      ingredients: props.ings,
+      price: props.price,
       orderData: formData,
-      userId: this.props.userId
+      userId: props.userId
     };
 
-    this.props.onOrderBurger(order, this.props.token);
+    props.onOrderBurger(order, props.token);
   };
 
-  checkValidity = (value, rules) => {
+  const checkValidity = (value, rules) => {
     let isValid = true;
     if (rules && rules.required) isValid = value.trim() !== '';
     return isValid;
   };
 
-  inputChangedHandler = (inputId, event) => {
+  const inputChangedHandler = (inputId, event) => {
     const updForm = {
-      ...this.state.orderForm
+      ...form
     };
 
     const updEl = { ...updForm[inputId] };
 
     updEl.value = event.target.value;
-    updEl.valid = this.checkValidity(updEl.value, updEl.validation);
+    updEl.valid = checkValidity(updEl.value, updEl.validation);
     updEl.touched = true;
     updForm[inputId] = updEl;
 
@@ -110,43 +108,42 @@ class ContactData extends Component {
       formValid = formValid && updForm[inpId].valid
     }
 
-    this.setState({ orderForm: updForm, formIsValid: formValid });
+    setForm(updForm);
+    setValid(formValid);
   };
 
-  render() {
-    const formels = [];
+  const formels = [];
 
-    for (let key in this.state.orderForm) {
-      formels.push({
-        id: key,
-        config: this.state.orderForm[key],
-      });
-    }
-
-    let form = (<Spinner/>);
-
-    if (!this.props.loading)
-      form =
-        (<div className={classes.ContactData}>
-          <h4>Enter your contacts</h4>
-          <form action="">
-            {formels.map(el => (
-              <Input key={el.id}
-                     elementType={el.config.elementType} elementConfig={el.config.elementConfig}
-                     value={el.config.value}
-                     invalid={!el.config.valid}
-                     onChange={this.inputChangedHandler.bind(this, el.id)}
-                     touched={el.config.touched}/>))}
-            <Button type="Success"
-                    disabled={!this.state.formIsValid}
-                    onClick={this.coHandler}>Order</Button>
-          </form>
-        </div>);
-
-
-    return form;
+  for (let key in form) {
+    formels.push({
+      id: key,
+      config: form[key],
+    });
   }
-}
+
+  let formComponent = (<Spinner/>);
+
+  if (!props.loading)
+    formComponent =
+      (<div className={classes.ContactData}>
+        <h4>Enter your contacts</h4>
+        <form action="">
+          {formels.map(el => (
+            <Input key={el.id}
+                   elementType={el.config.elementType} elementConfig={el.config.elementConfig}
+                   value={el.config.value}
+                   invalid={!el.config.valid}
+                   onChange={inputChangedHandler.bind(this, el.id)}
+                   touched={el.config.touched}/>))}
+          <Button type="Success"
+                  disabled={!isValid}
+                  onClick={coHandler}>Order</Button>
+        </form>
+      </div>);
+
+
+  return formComponent;
+};
 
 const mapState2Props = state => {
   return {
