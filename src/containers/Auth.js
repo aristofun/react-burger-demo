@@ -139,7 +139,7 @@ const Auth = (props) => {
 
       <Button
         onClick={switchAuthModeHandler}
-        btnType="Danger">Switch t o {isSignup ? 'Log in' : 'Sign up'}</Button>
+        btnType="Danger">Switch to {isSignup ? 'Log in' : 'Sign up'}</Button>
     </div>
   );
 };
