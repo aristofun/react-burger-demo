@@ -43,7 +43,7 @@ const BurgerBuilder = (props) => {
     const updatePurchase = (ingrs) => {
       const sum = Object.keys(ingrs).map(igKey => ingrs[igKey]).reduce((sum, el) => sum + el, 0);
       return sum > 0;
-    }
+    }                                            ;
 
     const disabledInfo = {
       ...ings
